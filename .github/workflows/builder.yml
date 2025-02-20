@@ -19,7 +19,7 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
-          java-version: '17' # Eğer hata devam ederse, '11' olarak değiştir.
+          java-version: '11' # Eğer hata devam ederse, '11' olarak değiştir.
           distribution: 'temurin'
 
       - name: Download AAR from URL
