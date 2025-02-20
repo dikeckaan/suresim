@@ -25,8 +25,10 @@ jobs:
       - name: Download AAR from URL
         run: |
           mkdir -p app/libs
-          curl -L -o app/libs/lsposed-api.aar "${{ github.event.inputs.aar_url }}"
-
+          curl -L -o app/libs/library.zip "${{ github.event.inputs.aar_url }}"
+          unzip app/libs/library.zip -d app/libs
+          mv app/libs/io/github/libxposed/api/100/* app/libs/
+      
       - name: Verify AAR Download
         run: ls -la app/libs
 
