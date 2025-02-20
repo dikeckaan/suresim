@@ -1,0 +1,54 @@
+name: Android CI with AAR Dependency
+
+on:
+  workflow_dispatch:
+    inputs:
+      aar_url:
+        description: "AAR dosyasının indirileceği URL"
+        required: true
+        type: string
+
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+
+      - name: Download AAR from URL
+        run: |
+          mkdir -p app/libs
+          curl -L -o app/libs/lsposed-api.aar "${{ github.event.inputs.aar_url }}"
+
+      - name: Verify AAR Download
+        run: ls -la app/libs
+
+      - name: Cache Gradle Packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Build with Gradle
+        run: ./gradlew build --no-daemon
+
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: app-apk
+          path: app/build/outputs/apk/**/*.apk
