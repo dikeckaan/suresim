@@ -19,7 +19,7 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
-          java-version: '17' # Java 11 de deneyebilirsin: '11'
+          java-version: '17' # Eğer hata devam ederse, '11' olarak değiştir.
           distribution: 'temurin'
 
       - name: Download AAR from URL
@@ -43,8 +43,13 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
+      - name: Clean Gradle Cache
+        run: ./gradlew clean --no-daemon
+
       - name: Build with Gradle
         run: ./gradlew build --no-daemon --stacktrace --info --warning-mode all
+        env:
+          _JAVA_OPTIONS: "-XX:+UseParallelGC -XX:MaxHeapSize=2g"
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
