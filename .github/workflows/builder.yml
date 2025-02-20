@@ -26,8 +26,11 @@ jobs:
         run: |
           mkdir -p app/libs
           curl -L -o app/libs/library.zip "${{ github.event.inputs.aar_url }}"
+          ls -R
           unzip app/libs/library.zip -d app/libs
+          ls -R
           mv app/libs/io/github/libxposed/api/100/* app/libs/
+          ls -R
       
       - name: Verify AAR Download
         run: ls -la app/libs
